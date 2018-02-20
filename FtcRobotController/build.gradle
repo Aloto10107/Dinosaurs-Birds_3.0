@@ -28,5 +28,7 @@ repositories {
 
 apply from: 'build.release.gradle'
 dependencies {
+    //implementation 'com.android.support:support-v4:26.1.0' This was commented out because it was throwing an error but it may be important
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
+apply plugin: 'kotlin-android-extensions'
