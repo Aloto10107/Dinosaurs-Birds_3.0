@@ -2,25 +2,49 @@ package org.firstinspires.ftc.robotcontroller.teamcode
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import com.qualcomm.robotcore.hardware.DcMotor
-import org.firstinspires.ftc.robotcontroller.teamcode.HardwareNames.*
+import java.lang.Math.abs
 
-/**
- * Created by Walker on 2/19/2018.
- */
 @TeleOp(name = "TeleOp")
 class TeleOpMain : OpMode() {
 
+    val power = 1.0
+
+    val leftX: Float get() = gamepad1.left_stick_x
+    val leftY: Float get() = gamepad1.left_stick_x
+    val rightX: Float get() = gamepad1.left_stick_x
+    val rightY: Float get() = gamepad1.left_stick_x
+
+
     private val nav by lazy {
-        Navigation(hardwareMap);
+        Navigation(hardwareMap)
     }
 
-    override fun init() {
+    private val vars = Variables
 
+    override fun init() {
+        vars.init(hardwareMap.appContext)
     }
 
     override fun loop() {
+        mecanumTankDrive()
+    }
+    
+    fun mecanumTankDrive() {
+        if(abs(leftX) > abs(leftY)) {
+            nav.setLeftDriveMotors(power, power)
+        } else {
+            nav.setLeftDriveMotors(power, -power)
+        }
 
+        if(abs(rightX) > abs(rightY)) {
+            nav.setRightDriveMotors(power, power)
+        } else {
+            nav.setRightDriveMotors(-power, power)
+        }
+    }
+    
+    fun omniStickDrive() {
+        
     }
 
 

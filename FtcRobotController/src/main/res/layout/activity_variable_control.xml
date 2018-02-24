@@ -11,4 +11,11 @@
         android:layout_margin="@dimen/text_margin"
         android:text="@string/large_text" />
 
+    <GridLayout
+        android:id="@+id/variable_control_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </GridLayout>
+
 </android.support.v4.widget.NestedScrollView>
