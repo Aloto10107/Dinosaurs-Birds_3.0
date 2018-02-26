@@ -15,6 +15,10 @@ class Navigation(val hardwareMap: HardwareMap) {
 
     val backRightMotor = hardwareMap[BACK_RIGHT_MOTOR] as DcMotor
 
+    init {
+        Variables.init(hardwareMap.appContext)
+    }
+
     val imu = {
         val params = BNO055IMU.Parameters()
         params.mode = BNO055IMU.SensorMode.IMU
@@ -24,33 +28,41 @@ class Navigation(val hardwareMap: HardwareMap) {
         hardwareMap[BNO055IMU::class.java, "imu"]
     }
 
-//    fun move(direction: Direction, distance: Double) {
-//        when (direction) {
-//            Direction.Forward -> setDriveMotors(power, power, power, power)
-//            Direction.Backward -> setDriveMotors(-power, -power, -power, -power)
-//            Direction.Left -> setDriveMotors(-power, power, -power, power)
-//            Direction.Right -> setDriveMotors(power, -power, power, power)
-//        }
-//    }
+    fun rotate(angle: Double) {
 
-    fun drive(direction: Direction, power: Double) {
+    }
+
+    fun turn(power: Double) {
+        setRightDriveMotors(Direction.Forward, power)
+        setLeftDriveMotors(Direction.Backward, power)
+    }
+
+    fun setDriveMotors(direction: Direction, power: Double) {
+        setLeftDriveMotors(direction, power)
+        setRightDriveMotors(direction, power)
+    }
+
+    fun setLeftDriveMotors(direction: Direction, power: Double) {
         when (direction) {
-            Direction.Forward -> setDriveMotors(power, power, power, power)
-            Direction.Backward -> setDriveMotors(-power, -power, -power, -power)
-            Direction.Left -> setDriveMotors(-power, power, -power, power)
-            Direction.Right -> setDriveMotors(power, -power, power, power)
+            Direction.Forward, Direction.FrontToBack -> setLeftDriveMotors(power, power)
+            Direction.Backward -> setLeftDriveMotors(-power, -power)
+            Direction.Right, Direction.SideToSide -> setLeftDriveMotors(power, -power)
+            Direction.Left -> setLeftDriveMotors(-power, power)
         }
     }
 
-    fun turn(angle: Double) {
-
+    fun setRightDriveMotors(direction: Direction, power: Double) {
+        when (direction) {
+            Direction.Forward, Direction.FrontToBack-> setRightDriveMotors(power, power)
+            Direction.Backward -> setRightDriveMotors(-power, -power)
+            Direction.Right, Direction.SideToSide -> setRightDriveMotors(power, -power)
+            Direction.Left -> setRightDriveMotors(-power, power)
+        }
     }
 
     fun setDriveMotors(frontLeft: Double, backLeft: Double, frontRight: Double, backRight: Double) {
-        frontLeftMotor.power = frontLeft
-        backLeftMotor.power = backLeft
-        frontRightMotor.power = frontRight
-        backRightMotor.power = backRight
+        setLeftDriveMotors(frontLeft, backLeft)
+        setRightDriveMotors(frontRight, backRight)
     }
 
     fun setLeftDriveMotors(front: Double, back: Double) {
@@ -73,7 +85,9 @@ class Navigation(val hardwareMap: HardwareMap) {
     enum class Direction {
         Forward,
         Backward,
+        Right,
         Left,
-        Right
+        FrontToBack,
+        SideToSide
     }
 }

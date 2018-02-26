@@ -9,11 +9,13 @@ class TeleOpMain : OpMode() {
 
     val power = 1.0
 
-    val leftX: Float get() = gamepad1.left_stick_x
-    val leftY: Float get() = gamepad1.left_stick_x
-    val rightX: Float get() = gamepad1.left_stick_x
-    val rightY: Float get() = gamepad1.left_stick_x
+    val leftX: Double get() = gamepad1.left_stick_x.toDouble()
+    val leftY: Double get() = gamepad1.left_stick_x.toDouble()
+    val rightX: Double get() = gamepad1.left_stick_x.toDouble()
+    val rightY: Double get() = gamepad1.left_stick_x.toDouble()
 
+    var x = true
+    var y = false
 
     private val nav by lazy {
         Navigation(hardwareMap)
@@ -22,29 +24,48 @@ class TeleOpMain : OpMode() {
     private val vars = Variables
 
     override fun init() {
-        vars.init(hardwareMap.appContext)
+        nav
     }
 
     override fun loop() {
-        mecanumTankDrive()
-    }
-    
-    fun mecanumTankDrive() {
-        if(abs(leftX) > abs(leftY)) {
-            nav.setLeftDriveMotors(power, power)
+        if(x) {
+            mecanumTankDrive()
         } else {
-            nav.setLeftDriveMotors(power, -power)
+            omniStickDrive()
+        }
+        if(gamepad1.x) {
+            x = true
+            y = false
         }
 
-        if(abs(rightX) > abs(rightY)) {
-            nav.setRightDriveMotors(power, power)
-        } else {
-            nav.setRightDriveMotors(-power, power)
+        if(gamepad1.y) {
+            y = true
+            x = false
         }
     }
-    
+
+    fun mecanumTankDrive() {
+        if (abs(leftX) > abs(leftY)) {
+            nav.setLeftDriveMotors(Navigation.Direction.FrontToBack, leftX)
+        } else {
+            nav.setLeftDriveMotors(Navigation.Direction.SideToSide, leftY)
+        }
+
+        if (abs(rightX) > abs(rightY)) {
+            nav.setRightDriveMotors(Navigation.Direction.FrontToBack, rightX)
+        } else {
+            nav.setRightDriveMotors(Navigation.Direction.SideToSide, rightY)
+        }
+    }
+
     fun omniStickDrive() {
-        
+        if (abs(leftX) > abs(leftY)) {
+            nav.setDriveMotors(Navigation.Direction.FrontToBack, leftX)
+        } else {
+            nav.setDriveMotors(Navigation.Direction.SideToSide, leftY)
+        }
+
+        nav.turn(rightX)
     }
 
 
