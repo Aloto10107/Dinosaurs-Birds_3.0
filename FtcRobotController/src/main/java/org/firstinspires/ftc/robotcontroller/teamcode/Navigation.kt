@@ -25,7 +25,15 @@ class Navigation(val hardwareMap: HardwareMap) {
         params.angleUnit = BNO055IMU.AngleUnit.DEGREES
         params.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC
         params.loggingEnabled = false
-        hardwareMap[BNO055IMU::class.java, "imu"]
+        hardwareMap.get(BNO055IMU::class.java, "imu")
+    }
+
+    fun getHeading() {
+
+    }
+
+    fun drive(distance: Double) {
+
     }
 
     fun rotate(angle: Double) {

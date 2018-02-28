@@ -16,22 +16,23 @@ object Variables {
 
     fun init(context: Context) {
         preferences = context.getSharedPreferences(VARIABLE_PREFRENCES_TAG, MODE_PRIVATE)
-        VariableNames.values().forEach {
-            put(it.name.replace("_", " "))
+        Names.values().forEach {
+            put(it.name)
         }
     }
 
-    fun get(name: String): Double {
-        return values[name]!!.num
+    operator fun get(variable: Names): Double {
+        return values[variable.name]!!.num
     }
 
     internal fun put(name: String) {
         values.put(name, Variable(preferences!!.getString(name, "0.0").toDouble()))
     }
+}
 
-    enum class VariableNames {
-        Motor_Power
-    }
+enum class Names {
+    Motor_Power,
+
 }
 
 class Variable(var num: Double)

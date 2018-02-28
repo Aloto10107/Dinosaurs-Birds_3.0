@@ -7,8 +7,6 @@ import java.lang.Math.abs
 @TeleOp(name = "TeleOp")
 class TeleOpMain : OpMode() {
 
-    val power = 1.0
-
     val leftX: Double get() = gamepad1.left_stick_x.toDouble()
     val leftY: Double get() = gamepad1.left_stick_x.toDouble()
     val rightX: Double get() = gamepad1.left_stick_x.toDouble()
@@ -64,9 +62,6 @@ class TeleOpMain : OpMode() {
         } else {
             nav.setDriveMotors(Navigation.Direction.SideToSide, leftY)
         }
-
         nav.turn(rightX)
     }
-
-
 }
