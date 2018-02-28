@@ -1,4 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<LinearLayout></LinearLayout>
+<!--
 <Robot>
     <MOTOR_CONTROLLER name="Motor Controller 1" serialNumber="7" port="0">
         <MOTOR name="" port="0" />
@@ -23,4 +25,4 @@
         <MOTOR name="" port="0" />
         <MOTOR name="" port="0" />
     </MOTOR_CONTROLLER>
-</Robot>
+</Robot>-->

@@ -3,7 +3,10 @@ package org.firstinspires.ftc.robotcontroller.teamcode
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.util.Log
+import com.qualcomm.robotcore.hardware.DcMotor
 import java.util.HashMap
+import java.util.logging.Logger
 
 
 object Variables {
@@ -19,6 +22,7 @@ object Variables {
         Names.values().forEach {
             put(it.name)
         }
+
     }
 
     operator fun get(variable: Names): Double {
@@ -26,7 +30,13 @@ object Variables {
     }
 
     internal fun put(name: String) {
-        values.put(name, Variable(preferences!!.getString(name, "0.0").toDouble()))
+        try {
+            var number = preferences!!.getString(name, "0.0")
+            if(number == "") number = "0.0"
+            values.put(name, Variable(number.toDouble()))
+        }catch (e: Exception) {
+            Log.e("number", preferences!!.getString(name, "0.0"))
+        }
     }
 }
 

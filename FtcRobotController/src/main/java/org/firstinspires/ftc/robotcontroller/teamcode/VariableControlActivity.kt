@@ -2,6 +2,7 @@ package org.firstinspires.ftc.robotcontroller.teamcode
 
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,12 +10,11 @@ import android.view.View
 import android.widget.*
 import com.qualcomm.ftcrobotcontroller.R
 import kotlinx.android.synthetic.main.activity_variable_control.*
-import java.util.HashMap
 
 class VariableControlActivity : Activity() {
-    val preferences = getSharedPreferences(Variables.VARIABLE_PREFRENCES_TAG, Context.MODE_PRIVATE)
-
-    val layout = findViewById<GridLayout>(R.id.variable_control_layout)
+    val preferences by lazy {
+        getSharedPreferences(Variables.VARIABLE_PREFRENCES_TAG, Context.MODE_PRIVATE)
+    }
 
     var selectedVariable: Variable? = null
 
@@ -36,7 +36,9 @@ class VariableControlActivity : Activity() {
             }
         })
 
-
+        if(Variables.values.isEmpty()) {
+            Variables.init(this)
+        }
 
         Variables.values.asIterable().forEachIndexed() { index, variable ->
             val field = NumberField(variable.key, variable.value)
@@ -44,15 +46,15 @@ class VariableControlActivity : Activity() {
             field.textView.layoutParams = params
             params = GridLayout.LayoutParams(GridLayout.spec(index), GridLayout.spec(1)).also { it.marginStart = 50 }
             field.editText.layoutParams = params
-            layout.addView(field.textView)
-            layout.addView(field.editText)
+            variable_control_layout.addView(field.textView)
+            variable_control_layout.addView(field.editText)
         }
     }
 
     override fun onPause() {
         super.onPause()
         Variables.values.forEach() {
-            preferences.edit().putString(it.key, it.value.toString()).apply()
+            preferences!!.edit().putString(it.key, it.value.toString()).apply()
         }
     }
 

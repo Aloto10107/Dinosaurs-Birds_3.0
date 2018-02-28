@@ -307,7 +307,7 @@ public class FtcRobotControllerActivity extends Activity {
         logPackageVersions();
 
         findViewById(R.id.variable_config_button).setOnClickListener((v) ->
-            startActivity(new Intent(AppUtil.getDefContext(), VariableControlActivity.class))
+            startActivity(new Intent(context, VariableControlActivity.class))
         );
     }
 
