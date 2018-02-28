@@ -36,10 +36,6 @@ class VariableControlActivity : Activity() {
             }
         })
 
-        if(Variables.values.isEmpty()) {
-            Variables.init(this)
-        }
-
         Variables.values.asIterable().forEachIndexed() { index, variable ->
             val field = NumberField(variable.key, variable.value)
             var params = GridLayout.LayoutParams(GridLayout.spec(index), GridLayout.spec(0)).also { it.marginStart = 50 }
@@ -48,13 +44,6 @@ class VariableControlActivity : Activity() {
             field.editText.layoutParams = params
             variable_control_layout.addView(field.textView)
             variable_control_layout.addView(field.editText)
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Variables.values.forEach() {
-            preferences!!.edit().putString(it.key, it.value.toString()).apply()
         }
     }
 
@@ -78,6 +67,7 @@ class VariableControlActivity : Activity() {
                 override fun afterTextChanged(number: Editable?) {
                     try {
                         variable.num = number.toString().toDouble()
+                        preferences.edit().putString(name, number.toString()).apply()
                     } catch (e: Exception) {
                     }
                 }

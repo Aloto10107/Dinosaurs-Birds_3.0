@@ -22,7 +22,7 @@ class TeleOpMain : OpMode() {
     private val vars = Variables
 
     override fun init() {
-        nav
+
     }
 
     override fun loop() {

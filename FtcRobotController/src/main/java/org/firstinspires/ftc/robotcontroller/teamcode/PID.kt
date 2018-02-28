@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime
  */
 class PID(private var Kp: Double, private var Kd: Double, private var Ki: Double) {
 
-    constructor(controller: (setPoint: Double, Ku: Double) -> Double, initialSetPoint: Double) : this(0.0,0.0,0.0){
+    constructor(controller: (setPoint: Double, Ku: Double) -> Double, initialSetPoint: Double) : this(0.0, 0.0, 0.0) {
         var Ku = 1.0
         var error = 1.0
         var KdNotFound = true
@@ -18,7 +18,7 @@ class PID(private var Kp: Double, private var Kd: Double, private var Ki: Double
             error = controller(initialSetPoint, Ku)
             if (lowerBoundNotFound) {
                 if (Math.abs(error) > 0.01) {
-                    if(time > 3) {
+                    if (time > 3) {
                         Ku /= 10
                         timer.reset()
                     }
@@ -28,11 +28,11 @@ class PID(private var Kp: Double, private var Kd: Double, private var Ki: Double
                     timer.reset()
                 }
             } else {
-                if(time > 3) {
+                if (time > 3) {
                     Ku += lowerBoundAdder
                     timer.reset()
                 }
-                if(Math.abs(error) < 0.01) {
+                if (Math.abs(error) < 0.01) {
                     var periodStartTime = time
                     if (Math.abs(de) > 0.01) {
                         val Tu = time - periodStartTime

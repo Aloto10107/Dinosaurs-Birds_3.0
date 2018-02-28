@@ -17,6 +17,7 @@ object Variables {
 
     var preferences: SharedPreferences? = null
 
+    @JvmStatic
     fun init(context: Context) {
         preferences = context.getSharedPreferences(VARIABLE_PREFRENCES_TAG, MODE_PRIVATE)
         Names.values().forEach {
@@ -30,13 +31,9 @@ object Variables {
     }
 
     internal fun put(name: String) {
-        try {
-            var number = preferences!!.getString(name, "0.0")
-            if(number == "") number = "0.0"
-            values.put(name, Variable(number.toDouble()))
-        }catch (e: Exception) {
-            Log.e("number", preferences!!.getString(name, "0.0"))
-        }
+        var number = preferences!!.getString(name, "0.0")
+        if (number == "") number = "0.0"
+        values.put(name, Variable(number.toDouble()))
     }
 }
 

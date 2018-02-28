@@ -94,6 +94,7 @@ import org.firstinspires.ftc.ftccommon.external.SoundPlayingRobotMonitor;
 import org.firstinspires.ftc.ftccommon.internal.FtcRobotControllerWatchdogService;
 import org.firstinspires.ftc.ftccommon.internal.ProgramAndManageActivity;
 import org.firstinspires.ftc.robotcontroller.teamcode.VariableControlActivity;
+import org.firstinspires.ftc.robotcontroller.teamcode.Variables;
 import org.firstinspires.ftc.robotcore.internal.hardware.DragonboardLynxDragonboardIsPresentPin;
 import org.firstinspires.ftc.robotcore.internal.network.DeviceNameManager;
 import org.firstinspires.ftc.robotcore.internal.network.PreferenceRemoterRC;
@@ -186,13 +187,11 @@ public class FtcRobotControllerActivity extends Activity {
             UsbDevice usbDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
             RobotLog.vv(TAG, "ACTION_USB_DEVICE_ATTACHED: %s", usbDevice.getDeviceName());
 
-            if (usbDevice != null) {  // paranoia
-                // We might get attachment notifications before the event loop is set up, so
-                // we hold on to them and pass them along only when we're good and ready.
-                if (receivedUsbAttachmentNotifications != null) { // *total* paranoia
-                    receivedUsbAttachmentNotifications.add(usbDevice);
-                    passReceivedUsbAttachmentsToEventLoop();
-                }
+            // We might get attachment notifications before the event loop is set up, so
+            // we hold on to them and pass them along only when we're good and ready.
+            if (receivedUsbAttachmentNotifications != null) { // *total* paranoia
+                receivedUsbAttachmentNotifications.add(usbDevice);
+                passReceivedUsbAttachmentsToEventLoop();
             }
         }
     }
@@ -307,8 +306,11 @@ public class FtcRobotControllerActivity extends Activity {
         logPackageVersions();
 
         findViewById(R.id.variable_config_button).setOnClickListener((v) ->
-            startActivity(new Intent(context, VariableControlActivity.class))
+                startActivity(new Intent(context, VariableControlActivity.class))
         );
+
+        Variables.init(context);
+
     }
 
     protected UpdateUI createUpdateUI() {

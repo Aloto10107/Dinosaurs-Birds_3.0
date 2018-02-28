@@ -15,10 +15,6 @@ class Navigation(val hardwareMap: HardwareMap) {
 
     val backRightMotor = hardwareMap[BACK_RIGHT_MOTOR] as DcMotor
 
-    init {
-        Variables.init(hardwareMap.appContext)
-    }
-
     val imu = {
         val params = BNO055IMU.Parameters()
         params.mode = BNO055IMU.SensorMode.IMU
@@ -61,7 +57,7 @@ class Navigation(val hardwareMap: HardwareMap) {
 
     fun setRightDriveMotors(direction: Direction, power: Double) {
         when (direction) {
-            Direction.Forward, Direction.FrontToBack-> setRightDriveMotors(power, power)
+            Direction.Forward, Direction.FrontToBack -> setRightDriveMotors(power, power)
             Direction.Backward -> setRightDriveMotors(-power, -power)
             Direction.Right, Direction.SideToSide -> setRightDriveMotors(power, -power)
             Direction.Left -> setRightDriveMotors(-power, power)
