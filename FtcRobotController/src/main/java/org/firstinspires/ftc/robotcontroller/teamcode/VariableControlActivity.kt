@@ -36,7 +36,7 @@ class VariableControlActivity : Activity() {
             }
         })
 
-        Variables.values.asIterable().forEachIndexed() { index, variable ->
+        Variables.values.asIterable().forEachIndexed { index, variable ->
             val field = NumberField(variable.key, variable.value)
             var params = GridLayout.LayoutParams(GridLayout.spec(index), GridLayout.spec(0)).also { it.marginStart = 50 }
             field.textView.layoutParams = params

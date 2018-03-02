@@ -9,35 +9,24 @@ import kotlin.math.abs
  */
 class PID(private var Kp: Double, private var Kd: Double, private var Ki: Double, val controller: (power: Double, setPoint: Double) -> Double, val graphOn: Boolean) {
 
-    constructor(controller: (power: Double, setPoint: Double) -> Double, setPoint: Double) : this(1.0, 0.0, 0.0, controller, true) {
+    constructor(controller: (power: Double, setPoint: Double) -> Double, testSetPoint: Double) : this(0.00000001, 0.0, 0.0, controller, true) {
         var KdNotFound = true
-        var lowerNotBoundFound = true
+        var setPoint = testSetPoint
         var upperBoundFound = false
         var lowerBoundIncrementer = 0.0
         var timeout = 3.0
-        timer.reset()
         while (KdNotFound) {
-            val timedOut = gotoSetPoint(setPoint, timeout)
-            if (!timedOut) lowerNotBoundFound = false
-            upperBoundFound = timedOut && lowerNotBoundFound
-            if (lowerNotBoundFound) {
-                Kp /= 10
+            gotoSetPoint(setPoint, timeout)
+            val period = getPeriod()
+            setPoint *= -1
+            if (period == 0.0) {
+                Kp *= 10
             } else {
-                if (lowerBoundIncrementer == 0.0) {
-                    lowerBoundIncrementer = Math.pow(10.0, Math.log10(Kp).toInt().toDouble() + 1)
-                } else {
-                    Kp += lowerBoundIncrementer
-                }
-            }
-            if (upperBoundFound) {
-                var periodStartTime = time
-                if (Math.abs(de) > 0.01) {
-                    val Tu = time - periodStartTime
-                    Kp = 0.6 * Kp
-                    Ki = 1.2 * Kp / Tu
-                    Kd = 3.0 / 40.0 * Kp * Tu
-                    KdNotFound = false
-                }
+                val Tu = period
+                Kp = 0.6 * Kp
+                Ki = 1.2 * Kp / Tu
+                Kd = 3.0 / 40.0 * Kp * Tu
+                KdNotFound = false
             }
         }
     }
@@ -50,7 +39,7 @@ class PID(private var Kp: Double, private var Kd: Double, private var Ki: Double
 
     val integralPoints = ArrayList<Pair<Double, Double>>()
 
-    val timeInterval = 0.01
+    val timeInterval = 0.05
 
     var prevError = 0.0
     var prevTime = 0.0
@@ -83,30 +72,34 @@ class PID(private var Kp: Double, private var Kd: Double, private var Ki: Double
             throw ExceptionInInitializerError("Point not found")
         }
 
-        val sortedErrorPoints = errorPoints.sortedBy { abs(it.second) }
-        val descendingSortedErrorPoints = errorPoints.sortedByDescending { abs(it.second) }
+        val size = errorPoints.size
 
-        val firstZero: Pair<Double, Double>
-
-        var prevPair = errorPoints.first()
-
-        for (pair in errorPoints) {
-            if (abs(prevPair.second) < abs(pair.second)) {
-                firstZero = prevPair
-                break
-            }
-            prevPair = pair
+        val aveErrorPoints = Array<Pair<Double, Double>>(size) {
+            if(it == 0) Pair(errorPoints[it].first, (errorPoints[it].second + errorPoints[it + 1].second) / 2.0)
+            else if(it == size - 1) Pair(errorPoints[it].first, (errorPoints[it - 1].second + errorPoints[it].second) / 2.0)
+            else Pair(errorPoints[it].first, (errorPoints[it - 1].second + errorPoints[it].second + errorPoints[it + 1].second) / 3.0)
         }
 
+        val aveDerPoints = Array<Pair<Double, Double>>(size) {
+            if(it == 0) Pair(aveErrorPoints[it].first, (aveErrorPoints[it].second - aveErrorPoints[it + 1].second) / (aveErrorPoints[it].first - aveErrorPoints[it].first))
+            else if(it == size - 1) Pair(aveErrorPoints[it].first, (aveErrorPoints[it - 1].second - aveErrorPoints[it].second) / (aveErrorPoints[it - 1].first - aveErrorPoints[it].first))
+            else Pair(aveErrorPoints[it].first, (aveErrorPoints[it - 1].second - aveErrorPoints[it + 1].second) / (aveErrorPoints[it - 1].first - aveErrorPoints[it + 1].first))
+        }
 
+        val zeros = ArrayList<Double>()
+
+        val absErrorPoints = aveErrorPoints.map { Pair(it.first, abs(it.second)) }
+
+        absErrorPoints.forEach {
+
+        }
 
         return 0.0
     }
 
     fun gotoSetPoint(setPoint: Double, timeout: Double): Boolean {
         timer.reset()
-        error = controller(0.0, setPoint)
-        while (error > 0.1 && errorDerivative > 0.1 && time < timeout) {
+        do {
             wait(timeInterval)
             integrate()
             addPoints()
@@ -114,8 +107,8 @@ class PID(private var Kp: Double, private var Kd: Double, private var Ki: Double
             error = controller(power, setPoint)
             prevTime = time
             prevError = error
-        }
-        return errorDerivative > 0.001
+        } while (error > 0.01 && errorDerivative > 0.01 && time < timeout)
+        return !(time < timeout)
     }
 
     fun wait(seconds: Double) {
