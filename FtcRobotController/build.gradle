@@ -1,6 +1,9 @@
 //
 // build.gradle in FtcRobotController
 //
+//
+// build.gradle in FtcRobotController
+//
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
@@ -8,14 +11,15 @@ android {
 
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 26
+        targetSdkVersion 19
     }
 
-    compileSdkVersion 26
+    compileSdkVersion 23
+    buildToolsVersion '25.0.3'
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 }
 
@@ -28,8 +32,5 @@ repositories {
 
 apply from: 'build.release.gradle'
 dependencies {
-//    implementation 'com.android.support:support-v4:26.1.0' //This was commented out because it was throwing an error but it may be important
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    compile 'com.jjoe64:graphview:4.2.1'
 }
-apply plugin: 'kotlin-android-extensions'

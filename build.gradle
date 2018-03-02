@@ -1,3 +1,4 @@
+
 /**
  * Top-level build file for ftc_app project.
  *
@@ -7,16 +8,9 @@ buildscript {
     ext.kotlin_version = '1.2.30'
     repositories {
         jcenter()
-        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:2.3.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
-}
-
-
-
-repositories {
-    google()
 }
