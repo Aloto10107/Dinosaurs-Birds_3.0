@@ -8,8 +8,13 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
+import android.widget.Toast.LENGTH_LONG
 import com.qualcomm.ftcrobotcontroller.R
 import kotlinx.android.synthetic.main.activity_variable_control.*
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.log10
+import kotlin.math.sin
 
 class VariableControlActivity : Activity() {
     val preferences by lazy {
@@ -21,6 +26,12 @@ class VariableControlActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_variable_control)
+
+        PID.createGraph(0.0, 4 * PI, 0.01) {
+            log10(it + 1)
+        }
+
+        Toast.makeText(this, PID.getPeriod().toString(), LENGTH_LONG).show()
 
         scrollBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, p2: Boolean) {
