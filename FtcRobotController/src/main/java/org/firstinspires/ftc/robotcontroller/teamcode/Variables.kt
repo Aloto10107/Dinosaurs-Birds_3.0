@@ -33,7 +33,7 @@ object Variables {
     internal fun put(name: String) {
         var number = preferences!!.getString(name, "0.0")
         if (number == "") number = "0.0"
-        values.put(name, Variable(number.toDouble()))
+        values.put(name, Variable(number.toDouble(), name))
     }
 }
 
@@ -42,4 +42,12 @@ enum class Names {
 
 }
 
-class Variable(var num: Double)
+class Variable(var num: Double, val name: String) {
+    fun getRange(): Range {
+        with(name) {
+            if(contains("ANGLE")) return Range(num - 10, num + 10)
+            if(contains("DISTANCE")) return Range(num - 15, num + 15)
+        }
+        return Range(0.0, num * 2)
+    }
+}

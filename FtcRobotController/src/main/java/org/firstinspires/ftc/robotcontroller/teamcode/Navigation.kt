@@ -3,9 +3,13 @@ package org.firstinspires.ftc.robotcontroller.teamcode
 import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.HardwareMap
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcontroller.external.samples.ConceptTelemetry
 import org.firstinspires.ftc.robotcontroller.teamcode.StringNames.*
+import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder
 
-class Navigation(val hardwareMap: HardwareMap) {
+class Navigation(val hardwareMap: HardwareMap, val telemetry: Telemetry) {
 
     val frontLeftMotor = hardwareMap[FRONT_LEFT_MOTOR] as DcMotor
 
@@ -13,20 +17,28 @@ class Navigation(val hardwareMap: HardwareMap) {
 
     val frontRightMotor = hardwareMap[FRONT_RIGHT_MOTOR] as DcMotor
 
-    val backRightMotor = hardwareMap[BACK_RIGHT_MOTOR] as DcMotor
+    val backRightMotor by lazy {
+        telemetry.addData("Abbdulla is gay", "")
+        telemetry.update()
+        hardwareMap[BACK_RIGHT_MOTOR] as DcMotor
+    }
 
-    val imu = {
+    val imu : BNO055IMU by lazy {
         val params = BNO055IMU.Parameters()
         params.mode = BNO055IMU.SensorMode.IMU
         params.angleUnit = BNO055IMU.AngleUnit.DEGREES
         params.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC
+
         params.loggingEnabled = false
-        hardwareMap.get(BNO055IMU::class.java, "imu")
+        val IMU = hardwareMap.get(BNO055IMU::class.java, "imu")
+        IMU.initialize(params)
+        IMU.angularOrientation.axesOrder = AxesOrder.ZXY
+        IMU
     }
 
-    fun getHeading() {
-
-    }
+//    fun getHeading(): Double {
+//
+//    }
 
     fun drive(distance: Double) {
 

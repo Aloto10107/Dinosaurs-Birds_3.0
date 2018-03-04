@@ -16,7 +16,7 @@ class TeleOpMain : OpMode() {
     var y = false
 
     private val nav by lazy {
-        Navigation(hardwareMap)
+        Navigation(hardwareMap, telemetry)
     }
 
     private val vars = Variables

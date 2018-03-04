@@ -23,19 +23,19 @@ class VariableControlActivity : Activity() {
 
     var selectedVariable: Variable? = null
 
+    var selectedVariableRange: Range? = null
+
+    val scrollBarRange = Range(0.0, 100.0)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_variable_control)
 
-        PID.createGraph(0.0, 4 * PI, 0.01) {
-            log10(it + 1)
-        }
-
-        Toast.makeText(this, PID.getPeriod().toString(), LENGTH_LONG).show()
-
         scrollBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, p2: Boolean) {
-
+            override fun onProgressChanged(seekBar: SeekBar?, currentProgress: Int, fromUser: Boolean) {
+                if (fromUser) {
+                    selectedVariable!!.num = scrollBarRange.mapFrom(currentProgress.toDouble(), selectedVariableRange!!)
+                }
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -46,6 +46,16 @@ class VariableControlActivity : Activity() {
 
             }
         })
+
+        scrollBarLeftButton.setOnClickListener {
+            scrollBar.progress -= 1
+            selectedVariable!!.num = scrollBarRange.mapTo(scrollBar.progress.toDouble(), selectedVariableRange!!)
+        }
+
+        scrollBarRightButton.setOnClickListener {
+            scrollBar.progress += 1
+            selectedVariable!!.num = scrollBarRange.mapTo(scrollBar.progress.toDouble(), selectedVariableRange!!)
+        }
 
         Variables.values.asIterable().forEachIndexed { index, variable ->
             val field = NumberField(variable.key, variable.value)
@@ -68,8 +78,13 @@ class VariableControlActivity : Activity() {
             it.setOnFocusChangeListener { view, hasFocus ->
                 if (hasFocus) {
                     scrollBarLayout.visibility = View.VISIBLE
+                    scrollBar.progress = 50
+                    selectedVariable = variable
+                    selectedVariableRange = variable.getRange()
                 } else {
                     scrollBarLayout.visibility = View.INVISIBLE
+                    selectedVariable = null
+                    selectedVariableRange = null
                 }
             }
             it.addTextChangedListener(object : TextWatcher {
@@ -88,5 +103,23 @@ class VariableControlActivity : Activity() {
         val textView = TextView(getContext()).also {
             it.text = name.replace("_", " ")
         }
+    }
+}
+
+class Range(var min: Double, var max: Double) {
+    fun mapTo(num: Double, start: Double, end: Double): Double {
+        return ((num-min)/(max-min))*(end-start)+start;
+    }
+
+    fun mapTo(num: Double, range: Range) : Double {
+        return mapTo(num, range.min, range.max)
+    }
+
+    fun mapFrom(num: Double, start: Double, end: Double): Double {
+        return ((num-start)/(end-start))*(max-min)+min;
+    }
+
+    fun mapFrom(num: Double, range: Range):Double {
+        return mapFrom(num, range.min, range.max)
     }
 }
