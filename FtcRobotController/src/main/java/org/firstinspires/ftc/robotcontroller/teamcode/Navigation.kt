@@ -3,9 +3,10 @@ package org.firstinspires.ftc.robotcontroller.teamcode
 import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.HardwareMap
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcontroller.external.samples.ConceptTelemetry
-import org.firstinspires.ftc.robotcontroller.teamcode.StringNames.*
+import org.firstinspires.ftc.robotcontroller.teamcode.VariableNames.BACK_LEFT_MOTOR
+import org.firstinspires.ftc.robotcontroller.teamcode.VariableNames.BACK_RIGHT_MOTOR
+import org.firstinspires.ftc.robotcontroller.teamcode.VariableNames.FRONT_LEFT_MOTOR
+import org.firstinspires.ftc.robotcontroller.teamcode.VariableNames.FRONT_RIGHT_MOTOR
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder
 

@@ -2,19 +2,16 @@ package org.firstinspires.ftc.robotcontroller.teamcode
 
 import android.app.Activity
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.*
-import android.widget.Toast.LENGTH_LONG
+import android.widget.EditText
+import android.widget.GridLayout
+import android.widget.SeekBar
+import android.widget.TextView
 import com.qualcomm.ftcrobotcontroller.R
 import kotlinx.android.synthetic.main.activity_variable_control.*
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.log10
-import kotlin.math.sin
 
 class VariableControlActivity : Activity() {
     val preferences by lazy {
@@ -24,6 +21,8 @@ class VariableControlActivity : Activity() {
     var selectedVariable: Variable? = null
 
     var selectedVariableRange: Range? = null
+
+    var initialVariableValue: Double? = null
 
     val scrollBarRange = Range(0.0, 100.0)
 
@@ -48,13 +47,21 @@ class VariableControlActivity : Activity() {
         })
 
         scrollBarLeftButton.setOnClickListener {
-            scrollBar.progress -= 1
-            selectedVariable!!.num = scrollBarRange.mapTo(scrollBar.progress.toDouble(), selectedVariableRange!!)
+            if (scrollBar.progress == 0) {
+
+            } else {
+                scrollBar.progress -= 1
+                selectedVariable!!.num = scrollBarRange.mapTo(scrollBar.progress.toDouble(), selectedVariableRange!!)
+            }
         }
 
         scrollBarRightButton.setOnClickListener {
-            scrollBar.progress += 1
-            selectedVariable!!.num = scrollBarRange.mapTo(scrollBar.progress.toDouble(), selectedVariableRange!!)
+            if (scrollBar.progress == 100) {
+
+            } else {
+                scrollBar.progress += 1
+                selectedVariable!!.num = scrollBarRange.mapTo(scrollBar.progress.toDouble(), selectedVariableRange!!)
+            }
         }
 
         Variables.values.asIterable().forEachIndexed { index, variable ->
@@ -65,6 +72,17 @@ class VariableControlActivity : Activity() {
             field.editText.layoutParams = params
             variable_control_layout.addView(field.textView)
             variable_control_layout.addView(field.editText)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        updatePreferences()
+    }
+
+    fun updatePreferences() {
+        Variables.values.forEach {
+            preferences.edit().putString(it.key, it.value.num.toString()).apply()
         }
     }
 
@@ -81,10 +99,12 @@ class VariableControlActivity : Activity() {
                     scrollBar.progress = 50
                     selectedVariable = variable
                     selectedVariableRange = variable.getRange()
+                    initialVariableValue = variable.num
                 } else {
                     scrollBarLayout.visibility = View.INVISIBLE
                     selectedVariable = null
                     selectedVariableRange = null
+                    initialVariableValue = null
                 }
             }
             it.addTextChangedListener(object : TextWatcher {
@@ -93,7 +113,6 @@ class VariableControlActivity : Activity() {
                 override fun afterTextChanged(number: Editable?) {
                     try {
                         variable.num = number.toString().toDouble()
-                        preferences.edit().putString(name, number.toString()).apply()
                     } catch (e: Exception) {
                     }
                 }
