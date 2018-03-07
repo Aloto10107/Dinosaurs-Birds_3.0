@@ -100,11 +100,6 @@ class VariableControlActivity : Activity() {
                     selectedVariable = variable
                     selectedVariableRange = variable.getRange()
                     initialVariableValue = variable.num
-                } else {
-                    scrollBarLayout.visibility = View.INVISIBLE
-                    selectedVariable = null
-                    selectedVariableRange = null
-                    initialVariableValue = null
                 }
             }
             it.addTextChangedListener(object : TextWatcher {
@@ -127,18 +122,18 @@ class VariableControlActivity : Activity() {
 
 class Range(var min: Double, var max: Double) {
     fun mapTo(num: Double, start: Double, end: Double): Double {
-        return ((num-min)/(max-min))*(end-start)+start;
+        return ((num - min) / (max - min)) * (end - start) + start;
     }
 
-    fun mapTo(num: Double, range: Range) : Double {
+    fun mapTo(num: Double, range: Range): Double {
         return mapTo(num, range.min, range.max)
     }
 
     fun mapFrom(num: Double, start: Double, end: Double): Double {
-        return ((num-start)/(end-start))*(max-min)+min;
+        return ((num - start) / (end - start)) * (max - min) + min;
     }
 
-    fun mapFrom(num: Double, range: Range):Double {
+    fun mapFrom(num: Double, range: Range): Double {
         return mapFrom(num, range.min, range.max)
     }
 }

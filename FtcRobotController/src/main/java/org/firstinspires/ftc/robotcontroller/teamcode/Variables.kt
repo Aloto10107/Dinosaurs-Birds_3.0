@@ -5,6 +5,8 @@ import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.text.SpannableStringBuilder
 import android.widget.EditText
+import android.widget.SeekBar
+import org.firstinspires.ftc.robotcontroller.teamcode.Variables.scrollBarRange
 import java.util.*
 
 
@@ -22,7 +24,6 @@ object Variables {
         Names.values().forEach {
             put(it.name)
         }
-
     }
 
     operator fun get(variable: Names): Double {
@@ -34,6 +35,8 @@ object Variables {
         if (number == "") number = "0.0"
         values.put(name, Variable(number.toDouble(), name))
     }
+
+    val scrollBarRange = Range(0.0, 100.0)
 }
 
 enum class Names {
@@ -44,18 +47,20 @@ enum class Names {
 class Variable(num: Double, val name: String) {
     var num = num
         set(value) {
-            if(field != value) {
+            if (field != value) {
                 field = value
-                if (editText != null) {
-                    editText!!.text = SpannableStringBuilder(value.toString())
-                }
+                editText?.text = SpannableStringBuilder(value.toString())
+                scrollBar?.progress = scrollBarRange.mapTo(value, getRange()).toInt()
             }
         }
     var editText: EditText? = null
+
+    var scrollBar: SeekBar? = null
+
     fun getRange(): Range {
         with(name) {
-            if(contains("ANGLE")) return Range(num - 10, num + 10)
-            if(contains("DISTANCE")) return Range(num - 15, num + 15)
+            if (contains("ANGLE")) return Range(num - 10, num + 10)
+            if (contains("DISTANCE")) return Range(num - 15, num + 15)
         }
         return Range(0.0, num * 2)
     }
